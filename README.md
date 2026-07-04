@@ -1,1 +1,0 @@
-# poi_summer_school
