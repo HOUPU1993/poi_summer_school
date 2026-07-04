@@ -20,7 +20,7 @@ permalink: /
 
 <div class="part-cards" markdown="1">
 
-[**Part I** — Research Background<br>Why POI study is matter - from the perspectives of urban study, How many public POI resources you can get in U.S, How other Prior POI crosswalk validation did before - how many metrics we can compare?, Why we narrow those mutiple validartion metrics into three we mainly foucsed on?](research-journey/){: .part-card}
+[**Part I** — Research Background<br>Why POI study is matter - from the perspective of urban study, How many public POI resources you can get in U.S, How other Prior POI crosswalk validation did before - how many metrics we can compare?, Why we narrow those mutiple validartion metrics into three we mainly foucsed on?](research-journey/){: .part-card}
 
 [**Part II** — A National-Level POI Quality Assessment Across 4 Data Sources and 15 Categories<br>A national-scale (14-MSA), multi-dimensional quality assessment of Overture, SafeGraph, Foursquare, and OSM against Google Places. Overall, SafeGraph leads, Overture is close behind, then Foursquare and OSM — but quality is not uniform: it varies by region and by category, which is exactly the gap Part III is built to close.](poi-study/){: .part-card}
 
