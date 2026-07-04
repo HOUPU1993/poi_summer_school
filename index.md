@@ -8,15 +8,9 @@ permalink: /
   <p class="lede">
     A walkthrough of the research process behind a nationwide, multi-dimensional
     quality assessment of alternative Point-of-Interest datasets — from the first
-    messy comparison table, to a 14-metro-area study, to POIBench, an interactive
+    messy comparison table, to a 14 MSAs study, to POIBench, an interactive
     platform that lets any researcher run the same benchmark on their own study area.
   </p>
-  <div class="hero-meta">
-    <div><div class="label">Study Areas</div><div class="value">14 U.S. Metropolitan Statistical Areas</div></div>
-    <div><div class="label">Reference POIs</div><div class="value">289,944 (Google Places)</div></div>
-    <div><div class="label">Alternative Datasets</div><div class="value">Overture · SafeGraph · Foursquare · OSM</div></div>
-    <div><div class="label">Manually Labeled Pairs</div><div class="value">84,000</div></div>
-  </div>
 </header>
 
 <div class="page-wrap">
@@ -26,11 +20,11 @@ permalink: /
 
 <div class="part-cards" markdown="1">
 
-[**Part I** — Research Journey<br>From an open question to a testable one: the comparison table, the prior-work review, and how nine candidate metrics narrowed to three.](research-journey/){: .part-card}
+[**Part I** — Research Background<br>Why POI study is matter - from the perspectives of urban study, How many public POI resources you can get in U.S, How other Prior POI crosswalk validation did before - how many metrics we can compare?, Why we narrow those mutiple validartion metrics into three we mainly foucsed on?](research-journey/){: .part-card}
 
-[**Part II** — The POI Study<br>A 14-MSA, multi-dimensional quality assessment of Overture, SafeGraph, Foursquare, and OSM against Google Places.](poi-study/){: .part-card}
+[**Part II** — A National-Level POI Quality Assessment Across 4 Data Sources and 15 Categories<br>A national-scale (14-MSA), multi-dimensional quality assessment of Overture, SafeGraph, Foursquare, and OSM against Google Places. Overall, SafeGraph leads, Overture is close behind, then Foursquare and OSM — but quality is not uniform: it varies by region and by category, which is exactly the gap Part III is built to close.](poi-study/){: .part-card}
 
-[**Part III** — POIBench<br>An interactive platform that runs the same benchmark on any study area, with LLM-assisted dataset recommendations.](poibench/){: .part-card}
+[**Part III** — POIBench Tool<br>How we designed and built an interactive benchmarking tool that lets researchers evaluate any city and any specific category of interest, backed by an LLM-based recommendation system — how to use it, and what's next.](poibench/){: .part-card}
 
 
 </div>

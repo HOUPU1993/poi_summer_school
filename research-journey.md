@@ -1,5 +1,5 @@
 ---
-title: Research Journey
+title: Research Background
 permalink: /research-journey/
 ---
 <div class="page-wrap">

@@ -1,5 +1,5 @@
 ---
-title: The POI Study
+title: A National-Level POI Quality Assessment Across 4 Data Sources and 15 Categories
 permalink: /poi-study/
 ---
 <div class="page-wrap">

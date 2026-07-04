@@ -228,7 +228,7 @@ ol.steps li strong:first-child{display:block;font-size:16px;font-family:'JetBrai
 /* Figures: a standalone image paragraph followed by an emphasis "figcap" paragraph */
 .page-content p > img, .page-content p.img-only{margin:0;}
 .page-content img{
-  max-width:100%;display:block;border:1px solid var(--line);background:#fff;border-radius:var(--radius);
+  max-width:100%;display:block;border:1px solid var(--line);border-radius:var(--radius);
   margin:26px 0 8px 0;
 }
 .page-content p.figcap, .page-content em.figcap{

@@ -1,5 +1,5 @@
 ---
-title: POIBench
+title: POIBench Tool
 permalink: /poibench/
 ---
 <div class="page-wrap">
