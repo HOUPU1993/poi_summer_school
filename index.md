@@ -6,10 +6,7 @@ permalink: /
   <span class="coord-tag">field notebook → paper → platform</span>
   <h1>How reliable are the POI datasets urban research runs on?</h1>
   <p class="lede">
-    A walkthrough of the research process behind a nationwide, multi-dimensional
-    quality assessment of alternative Point-of-Interest datasets — from the first
-    messy comparison table, to a 14 MSAs study, to POIBench, an interactive
-    platform that lets any researcher run the same benchmark on their own study area.
+    A walkthrough of the research process behind a nationwide, multi-dimensional quality assessment of alternative Point-of-Interest datasets — from the first messy comparison table, to a 14 MSAs study, to POIBench, an interactive platform that lets any researcher run the same benchmark on their own study area.
   </p>
 </header>
 
