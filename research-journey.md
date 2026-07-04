@@ -131,7 +131,7 @@ for p in places:
 ```
 
 ### Overture Maps
-Public Parquet files on Azure Blob Storage / AWS S3 — no API key required. Example query (Synapse/Azure SQL serverless) for a bounding box around Goleta, CA:
+Public Parquet files on Azure Blob Storage / AWS S3 — no API key required. Details [here](https://docs.overturemaps.org/), Example query (Synapse/Azure SQL serverless) for a bounding box around Goleta, CA:, when you finish the configuration in Azure platform, you can query data by the later codes:
 ```sql
 SELECT *
 FROM
@@ -183,7 +183,7 @@ print(df[["name", "latitude", "longitude"]])
 ```
 
 ### SafeGraph
-Requires applying for a free **academic data license** through SafeGraph directly — not self-serve. Data ships as Parquet/CSV via a private S3 bucket once approved.
+Requires applying for a free **academic data license** through SafeGraph directly — not self-serve. Data ships as Parquet/CSV via a private S3 bucket once approved. Details [here](https://www.safegraph.com/products/places/)
 
 ### OpenStreetMap
 Query from the [Pyrosm](https://pyrosm.readthedocs.io/en/stable/) directly.
