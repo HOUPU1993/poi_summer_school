@@ -11,7 +11,7 @@ permalink: /research-journey/
 
 <p class="page-dek">15 years ago, most urban studies were survey-based. Between 2010 and 2026, POI data has shifted from a supporting layer to a primary source of evidence — which also means that any quality problem in the underlying data now propagates directly into empirical findings and, downstream, into policy decisions.</p>
 
-## 1.1 &nbsp;Why POI Data Quality Matters for Urban Research {#j-why}
+## 1.1 &nbsp;How POI Data Has Been Used in Urban Research {#j-why}
 
 The table below summarizes how POI data has been applied across urban research fields over time, adapted from [Andris et al. (2022), *Points of Interest (POI): a commentary on the state of the art, challenges, and prospects for the future*](https://link.springer.com/article/10.1007/s43762-022-00047-w).
 
@@ -27,14 +27,9 @@ The table below summarizes how POI data has been applied across urban research f
 | ≈2025 → | Semantic & AI-driven understanding | Text semantics, embeddings, and LLM-based classification to capture urban meaning and function. |
 {: .table-wrap}
 
-> **Why this matters**
->
-> Google Places is widely regarded as the most complete and accurate POI source, but its restrictive access policy and per-request cost make it impractical for large-scale academic research. Researchers therefore fall back on alternative datasets — but almost always without knowing, in a systematic way, what they are trading off by doing so. As POI data moves from a supporting variable to the evidentiary backbone of urban studies, that blind spot becomes a methodological risk rather than a footnote.
-{: .callout}
-
 ## 1.2 &nbsp;Mapping the Data Source Landscape {#j-landscape}
 
-The first concrete step was not modeling — it was cataloguing. Fourteen POI providers were reviewed for size, update cadence, and access terms.
+As a preliminary step, fourteen popular POI providers from U.S were reviewed for size, update period, and access terms; the results are listed below.
 
 | Resource | Reported Size | Notes | Rating |
 |---|---|---|---|
@@ -55,76 +50,93 @@ The first concrete step was not modeling — it was cataloguing. Fourteen POI pr
 | [Geoapify](https://apidocs.geoapify.com/) | — | Travel-type search around a location; 400+ place types. | ★★★ |
 {: .table-wrap}
 
-> **Week 1 takeaway**
+> **Google Places** is widely regarded as the most complete and accurate POI source, but its restrictive access policy and per-request cost make it impractical for large-scale academic research. Researchers therefore turn to alternative datasets — but rarely with a systematic, national-scale understanding of what trade-offs that choice entails.
 >
-> **OSM**, **Foursquare**, **SafeGraph**, and **Google Places** were the datasets most frequently cited in recent literature. Weighing data size, category coverage, and update frequency, **Mapbox**, **Precisely Places**, and **Overture Maps** were added as further candidates for comparison — a shortlist that would later narrow again on cost and access grounds.
+> Further review confirmed that **OSM**, **Foursquare**, **SafeGraph**, and **Overture Maps** were the alternative datasets most frequently cited in recent literature, largely due to their data size, category coverage, update frequency, and ease of access.
 {: .callout}
+
+**Note:** **Mapbox** overlaps substantially with the sources above. **Precisely Places**, **TomTom Places API**, and **HERE Places**, despite wide commercial adoption — largely driven by supply-chain and history owners information — appear far less frequently in the academic urban-studies literatures.
+{: .note}
+
+![POI Data Sources Relationships](../assets/poi_study/poi_data_sources_relationships.png)
+*<span class="fig-label">FIG. 1</span>How the nine POI data sources collect and share data — arrows show which sources feed into which aggregators.*
+{: .figcap}
 
 ## 1.3 &nbsp;What Prior Comparison Studies Found {#j-priorwork}
 
-Four existing POI-comparison studies were reviewed in depth to understand what had already been measured, and how.
+Three existing POI-comparison studies were reviewed in depth to understand what had already been measured, and how.
 
 | Study | Datasets / Region | Key Findings |
 |---|---|---|
 | [Edmisten, 2024](https://surprisedatespot.com/blog/comparing-overture-osm-restaurants/) | OSM vs. Overture Maps · global restaurants | Overture returned more restaurants by raw count, but a 100-POI manual spot-check against Google Maps found OSM better aligned to reality (72 vs. 60 confirmed). Filtering to high-confidence records on both sides reversed the ranking — Overture edged ahead. |
 | [Franzini et al., 2020](https://www.scitepress.org/Papers/2020/95643/95643.pdf) | Google Maps vs. OSM · Province of Pavia, Italy | Building-level completeness rose from 42%→65% (OSM) and 28%→91% (GM) between spring and summer 2018 updates. OSM completeness tracked the number and consistency of local contributors. |
 | [Klinkhardt et al., 2023](https://journals.sagepub.com/doi/10.1177/03611981231169280) | OSM vs. real-world survey · 49 German urban areas | Completeness varied sharply by category and density — ≈73% for shopping, ≈22% for private business. A *saturation index* proved a valid intrinsic indicator for estimating missing POIs without ground truth. |
-| [Hochmair et al., 2017](https://link.springer.com/chapter/10.1007/978-3-319-71470-7_15) | OSM, Foursquare, Google, Yelp, Facebook, Instagram, Twitter · 7 global cities | Social platforms had far higher POI counts but lower positional accuracy and heavy clustering (Nearest-Neighbor Index: Facebook 0.51 vs. OSM 0.73). A Cross-K analysis showed spatial segregation by function — no single source dominated on every axis. |
 {: .table-wrap}
 
-Two of the four used *relative* cross-dataset comparison, one ran an on-site survey for an *absolute* comparison, and one treated Google Places as a benchmark.
+> Two of them used *relative* cross-dataset comparison, one ran an on-site survey for an *absolute* comparison, and one treated Google Places as a benchmark.
+{: .callout}
 
 ## 1.4 &nbsp;How Many POI Comparison Metrics Can We Get? {#j-metrics}
 
 Synthesizing across the four prior studies above surfaced a working list of nine candidate metrics:
 
-- **01** — **Spatial coverage & distribution** — Nearest-Neighbor Index for clustered / random / dispersed patterns
-- **02** — **Completeness** — share of real-world POIs present; saturation index for growth-curve maturity
-- **03** — **Accuracy** — via confidence fields (Overture), reality scores (Foursquare), or Google Places as proxy ground truth
-- **04** — **Consistency** — Cross-K function; do sources cover the same functional areas?
-- **05** — **Positional accuracy** — coordinate error vs. ground truth, in meters
-- **06** — **Category structure** — clarity and comparability of classification hierarchies
-- **07** — **Average density** — POIs per km²
-- **08** — **Download cost** — API limits, pricing, retrieval time
-- **09** — **Update frequency** — refresh interval and temporal validity
+- **01** — **Spatial distribution pattern** — are a dataset's POIs clustered, randomly distributed, or dispersed across the study area?
+- **02** — **Completeness** — how much of the real-world POI population does a dataset actually capture?
+- **03** — **Accuracy** — are a POI's attributes (existence, name, category) correct?
+- **04** — **Consistency** — do different datasets cover the same functional areas of a city, or different ones?
+- **05** — **Positional accuracy** — how far off is a POI's recorded coordinate from its true location?
+- **06** — **Category structure** — how comparable are datasets' classification hierarchies?
+- **07** — **Average density** — how many POIs does a dataset report per km²?
+- **08** — **Download cost** — how expensive or restrictive is it to access the data?
+- **09** — **Update frequency** — how often is the data refreshed?
 {: .card-grid}
 
 This nine-metric wishlist was feasible to *define*, but not to *compute consistently at national scale* within one project timeline — which is what forced the next round of scoping.
 
 ## 1.5 &nbsp;Why Four Datasets, and Only Three Dimensions? {#j-narrow}
 
-The final study focuses on **four alternative datasets — Overture, SafeGraph, Foursquare, and OSM — evaluated against Google Places as the reference benchmark**, on **three quality dimensions**: completeness, positional accuracy, and spatial heterogeneity. Getting there took six weeks of deliberately cutting scope.
-
-1. **Week 1 — nine dimensions, no ground truth strategy**<br>Broad literature-derived metric list; open question of what counts as "ground truth" at a national scale versus a single-city scale.
-2. **Week 2 — a two-scale design and a shorter metric list**<br>Introduced a **MSA scale** (Google Places as proxy ground truth, broad coverage) and a **city scale** (municipal open data as ground truth for category-specific validation, e.g., restaurants, schools). The nine metrics were cut to four core ones — **completeness**, **location accuracy**, **category bias**, and **spatial bias** (downtown vs. suburban vs. rural) — with cost and update frequency demoted to a one-paragraph note rather than a computed metric.
-3. **Week 3 — a pilot study exposes category-level bias**<br>A small Google Places pilot in Isla Vista (see 1.7) showed that "missingness" itself varies enormously by category — this became the seed of what the final paper calls *category-specific heterogeneity*.
-4. **Week 4 — matching becomes the bottleneck, not the metrics**<br>Attempting to actually compute completeness required first solving cross-dataset **entity matching** — the four remaining metrics were only as good as the matching pipeline underneath them. This is the point where methodology work (Levenshtein distance, RapidFuzz, ML-based verification) took over as the main technical focus.
-5. **Weeks 5–6 — convergence to the final framework**<br>Category bias and spatial bias were folded together as two expressions of the same underlying phenomenon — a dataset's completeness or accuracy changing across space and category — and reframed as **spatial heterogeneity**. The final framework was set: **completeness**, **positional accuracy**, and **spatial heterogeneity** (measured as a function of both metro population tier and distance to the CBD).
-{: .steps}
-
-**Why these four datasets specifically?** Overture, SafeGraph, Foursquare, and OSM were the most consistently available, most frequently cited in prior literature (Section 1.3), and — critically — free or academically licensed, unlike Mapbox, HERE, TomTom, or Precisely. Google Places was kept as the *reference*, not a fifth candidate, because it is the benchmark everyone else is measured against, not an alternative to it.
-{: .note}
-
-> **Net effect**
->
-> Fewer metrics, computed rigorously and at national scale (14 MSAs, 289,944 reference POIs), proved more useful than nine metrics computed loosely. The two dropped dimensions — cost and update frequency — were not abandoned; they survive as qualitative context in Part II rather than as quantitative outputs.
-{: .callout}
+The final study focuses on **four alternative datasets — Overture, SafeGraph, Foursquare, and OSM — evaluated against Google Places as the reference benchmark**, on **three quality dimensions**: completeness, positional accuracy, and spatial heterogeneity.
 
 ## 1.6 &nbsp;How to Download the Data by Coding (Live Demo) {#j-download}
 
-Each data source has a different access pattern. These are the actual queries used to pull sample data during development — useful as a starting point to demo live in class.
+Each data source has a different access pattern. These are the actual queries used to pull sample data during development.
 
 ### Google Places API
 Requires an API key and billing enabled on Google Cloud. The `searchNearby` endpoint returns up to 20 POIs per request, ranked by popularity by default (distance-ranking is also selectable). See the [Nearby Search documentation](https://developers.google.com/maps/documentation/places/web-service/nearby-search).
 
+```python
+import requests
+
+API_KEY = "YOUR_API_KEY"
+
+url = "https://places.googleapis.com/v1/places:searchNearby"
+headers = {
+    "Content-Type": "application/json",
+    "X-Goog-Api-Key": API_KEY,
+    "X-Goog-FieldMask": "places.displayName,places.location,places.types"
+}
+body = {
+    "locationRestriction": {
+        "circle": {
+            "center": {"latitude": 34.4133, "longitude": -119.8610},
+            "radius": 500.0
+        }
+    }
+}
+
+response = requests.post(url, headers=headers, json=body)
+places = response.json()["places"]
+for p in places:
+    print(p["displayName"]["text"], p["location"])
+```
+
 ### Overture Maps
 Public Parquet files on Azure Blob Storage / AWS S3 — no API key required. Example query (Synapse/Azure SQL serverless) for a bounding box around Goleta, CA:
-
 ```sql
 SELECT *
 FROM
     OPENROWSET(
-        BULK 'https://overturemapswestus2.blob.core.windows.net/release/2025-10-22.0/theme=places/type=place/',
+        BULK 'https://overturemapswestus2.blob.core.windows.net/release/2026-04-15.0/theme=places/type=place/',
         FORMAT = 'PARQUET'
     )
 WITH
@@ -140,12 +152,13 @@ WITH
         bbox VARCHAR(200),
         geometry VARBINARY(MAX)
     )
-    AS [result]
+    AS
+        [result]
 WHERE
-        TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.xmin')) > -119.86940
-    AND TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.xmax')) < -119.85346
-    AND TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.ymin')) > 34.40887
-    AND TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.ymax')) < 34.41727
+        TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.xmin')) > -89.182473
+    AND TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.xmax')) < -88.187199
+    AND TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.ymin')) > 36.771569
+    AND TRY_CONVERT(FLOAT, JSON_VALUE(bbox, '$.ymax')) < 37.425322
 ```
 
 ### Foursquare Open Source Places
@@ -153,39 +166,35 @@ Distributed via an Iceberg catalog; requires a free access token from [places.fo
 
 ```python
 from pyiceberg.catalog import load_catalog
-from pyiceberg.expressions import And, GreaterThanOrEqual, LessThanOrEqual
 
 catalog = load_catalog(
     "default",
     **{
         "warehouse": "places",
         "uri": "https://catalog.h3-hub.foursquare.com/iceberg",
-        "token": token,
+        "token": "YOUR_TOKEN",
         "header.content-type": "application/vnd.api+json",
-        "rest-metrics-reporting-enabled": "false",
     },
 )
 
-minLon, maxLon = -119.86940, -119.85346
-minLat, maxLat =  34.40887,  34.41727
-
-table = catalog.load_table('datasets.places_os')
-
-expr = And(
-    And(GreaterThanOrEqual("longitude", minLon), LessThanOrEqual("longitude", maxLon)),
-    And(GreaterThanOrEqual("latitude",  minLat), LessThanOrEqual("latitude",  maxLat)),
-)
-
-places_os = table.scan(row_filter=expr, limit=5000).to_pandas()
-places_os
+table = catalog.load_table("datasets.places_os")
+df = table.scan(limit=20).to_pandas()
+print(df[["name", "latitude", "longitude"]])
 ```
 
 ### SafeGraph
 Requires applying for a free **academic data license** through SafeGraph directly — not self-serve. Data ships as Parquet/CSV via a private S3 bucket once approved.
 
 ### OpenStreetMap
-Free, no key required. Small areas: query the [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API) directly. Large areas: download regional extracts from [Geofabrik](https://download.geofabrik.de/).
-{: .note}
+Query from the [Pyrosm](https://pyrosm.readthedocs.io/en/stable/) directly.
+```python
+from pyrosm import OSM, get_data
+
+fp = get_data("Goleta")          # downloads a regional extract
+osm = OSM(fp)
+pois = osm.get_pois()
+print(pois[["name", "amenity", "geometry"]].head(20))
+```
 
 </div>
 </div>
