@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if page.title and page.title != "Home" %}{{ page.title }} — {% endif %}{{ site.title }}</title>
+<meta name="description" content="{{ site.description }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+<div class="shell">
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="{{ '/' | relative_url }}">
+      <span class="coord">34.4133°N, 119.8610°W · GOLETA, CA</span>
+      <h1>Benchmarking<br>Multi-Source POI Data</h1>
+      <span class="byline">Houpu Li · Urban Data Research Lab, UCSB</span>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-title">Part I</div>
+        <a href="{{ '/research-journey/' | relative_url }}" class="page-link" data-path="/research-journey/">Research Journey</a>
+        <a href="{{ '/research-journey/#j-why' | relative_url }}">Why POI Quality Matters</a>
+        <a href="{{ '/research-journey/#j-landscape' | relative_url }}">Data Source Landscape</a>
+        <a href="{{ '/research-journey/#j-priorwork' | relative_url }}">What Prior Studies Found</a>
+        <a href="{{ '/research-journey/#j-evolution' | relative_url }}">From 9 Metrics to 3</a>
+        <a href="{{ '/research-journey/#j-method-explore' | relative_url }}">Methodology Exploration</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Part II</div>
+        <a href="{{ '/poi-study/' | relative_url }}" class="page-link" data-path="/poi-study/">The POI Study</a>
+        <a href="{{ '/poi-study/#s-intro' | relative_url }}">Introduction &amp; Design</a>
+        <a href="{{ '/poi-study/#s-standardization' | relative_url }}">Why Standardization?</a>
+        <a href="{{ '/poi-study/#s-matching' | relative_url }}">Matching Pipeline</a>
+        <a href="{{ '/poi-study/#s-framework' | relative_url }}">Quality Framework</a>
+        <a href="{{ '/poi-study/#s-results' | relative_url }}">Results</a>
+        <a href="{{ '/poi-study/#s-discussion' | relative_url }}">Discussion</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Part III</div>
+        <a href="{{ '/poibench/' | relative_url }}" class="page-link" data-path="/poibench/">POIBench</a>
+        <a href="{{ '/poibench/#b-overview' | relative_url }}">Platform Overview</a>
+        <a href="{{ '/poibench/#b-modules' | relative_url }}">Seven Modules</a>
+        <a href="{{ '/poibench/#b-dashboard' | relative_url }}">Quality Dashboard</a>
+        <a href="{{ '/poibench/#b-limits' | relative_url }}">Limitations &amp; Roadmap</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-foot">
+      Prepared for classroom presentation.<br>
+      SIGSPATIAL '26 Demo Paper · Transactions in GIS (in prep)
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main" id="top">
+    {{ content }}
+
+    <footer class="footer">
+      <div>Houpu Li &amp; Wenfei Xu · Urban Data Research Lab, UCSB · Goleta, CA</div>
+      <div>Prepared for classroom presentation</div>
+    </footer>
+  </div>
+</div>
+
+<script>
+// Mobile sidebar toggle
+const toggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.sidebar-nav a').forEach(a=>{
+  a.addEventListener('click', ()=> sidebar.classList.remove('open'));
+});
+
+// Mark the current page's top-level nav link active
+const here = window.location.pathname.replace(/index\.html$/, '');
+document.querySelectorAll('.page-link').forEach(a=>{
+  if(here.endsWith(a.dataset.path)) a.classList.add('active');
+});
+
+// Scrollspy for in-page section anchors (only observes headings that exist on this page)
+const navLinks = Array.from(document.querySelectorAll('.sidebar-nav a'));
+const idLinks = navLinks.filter(a => a.getAttribute('href').includes('#'));
+const targets = idLinks
+  .map(a => {
+    const id = a.getAttribute('href').split('#')[1];
+    return document.getElementById(id);
+  })
+  .filter(Boolean);
+
+if(targets.length){
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      const id = entry.target.id;
+      idLinks.forEach(a=>{
+        const match = a.getAttribute('href').split('#')[1] === id;
+        a.classList.toggle('active', match);
+      });
+    });
+  }, {rootMargin: '-15% 0px -70% 0px', threshold: 0});
+  targets.forEach(t => observer.observe(t));
+}
+</script>
+
+</body>
+</html>

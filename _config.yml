@@ -1,0 +1,24 @@
+title: "Benchmarking Multi-Source POI Data"
+description: "Research journey, study, and platform for evaluating alternative POI datasets"
+author: "Houpu Li"
+
+# Use kramdown with GFM-style pipe tables and fenced code blocks.
+# This is the same markdown engine GitHub Pages uses by default,
+# so no extra plugins or Gemfile changes are required.
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Keep permalinks clean, e.g. /poi-study/ instead of /poi-study.html
+permalink: pretty
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+
+exclude:
+  - README.md
