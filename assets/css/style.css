@@ -67,7 +67,9 @@ hr{border:none;border-top:1px solid var(--line);margin:40px 0;}
   border-right:1px solid var(--line);
   background:var(--paper-raise);
 }
-.brand{display:block;margin-bottom:8px;text-decoration:none;}
+.brand-title{display:block;text-decoration:none;}
+.byline a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--line);}
+.byline a:hover{color:var(--accent);}
 .brand .coord{
   display:block;
   font-family:'IBM Plex Mono',monospace;
