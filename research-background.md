@@ -187,6 +187,7 @@ Requires applying for a free **academic data license** through SafeGraph directl
 
 ### OpenStreetMap
 Query from the [Pyrosm](https://pyrosm.readthedocs.io/en/stable/) directly.
+
 ```python
 from pyrosm import OSM, get_data
 
