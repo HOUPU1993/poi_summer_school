@@ -2,22 +2,23 @@
    Design tokens
    ========================================================================== */
 :root{
-  --paper:#0A0C0B;
-  --paper-raise:#121412;
-  --ink:#E9ECE6;
-  --ink-soft:#8C978D;
-  --line:#2A2E2A;
-  --line-soft:#1B1E1B;
-  --accent:#5FD9B0;
-  --accent-soft:#173229;
-  --overture:#6FA8E8;
-  --safegraph:#5FD9B0;
-  --foursquare:#E0B94E;
-  --osm:#E0724F;
-  --gplaces:#9BA8B3;
+  --paper:#FFFFFF;
+  --paper-raise:#F5F5F3;
+  --ink:#1A1A1A;
+  --ink-soft:#5C5C5C;
+  --line:#D8D8D5;
+  --line-soft:#EAEAE7;
+  --accent:#1F8A70;
+  --accent-soft:#DCEFE9;
+  --overture:#3763A8;
+  --safegraph:#1F8A70;
+  --foursquare:#B8860B;
+  --osm:#B5502B;
+  --gplaces:#7C8B9A;
   --radius:3px;
   --sidebar-w:290px;
 }
+
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
