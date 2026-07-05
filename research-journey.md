@@ -13,18 +13,18 @@ permalink: /research-journey/
 
 ## 1.1 &nbsp;How POI Data Has Been Used in Urban Research {#j-why}
 
-The table below summarizes how POI data has been applied across urban research fields over time, adapted from [Andris et al. (2022), *Points of Interest (POI): a commentary on the state of the art, challenges, and prospects for the future*](https://link.springer.com/article/10.1007/s43762-022-00047-w).
+The table below summarizes how POI data has been applied across urban research fields over time, adapted from [Psyllidis, A., Gao, S., Hu, Y. et al. (2022), *Points of Interest (POI): a commentary on the state of the art, challenges, and prospects for the future*](https://link.springer.com/article/10.1007/s43762-022-00047-w).
 
-| Period | Research Application | What Changed |
-|---|---|---|
-| ≈2010–2017 | Urban functional zoning & land-use classification | POIs used mainly as *auxiliary* spatial data — density, category ratios, and nearest-neighbor indicators integrated with remote sensing or census data to detect functional zones and validate land-use maps. |
-| ≈2010–2017 | Urban morphology & structure | POI distribution linked to street-network metrics (connectivity, centrality) to study compactness, mixed use, and spatial hierarchy. |
-| ≈2018–2024 | Urban vibrancy & spatial equity | POIs combined with mobile-phone, social-media, and nighttime-light data to quantify vitality, accessibility, and livability via entropy and diversity indices. |
-| ≈2018–2024 | Socioeconomic inequality & segregation | POIs used to detect disparities in access to retail, food, and education — food deserts, opportunity gaps, racialized service distributions. |
-| ≈2018–2024 | Transportation & mobility | POIs as destination proxies in trip-generation and demand models; accessibility via clustering and travel-time buffers. |
-| ≈2018–2024 | Multi-source integration | Fusion of heterogeneous POI datasets (Google, Overture, SafeGraph, OSM) to improve completeness, positional accuracy, and semantic consistency — **the direct predecessor of this study.** |
-| ≈2025 → | Dynamic, real-time monitoring | High-frequency POI updates for near-real-time business turnover and post-pandemic recovery analysis. |
-| ≈2025 → | Semantic & AI-driven understanding | Text semantics, embeddings, and LLM-based classification to capture urban meaning and function. |
+| Period | Research Application |
+|---|---|
+| ≈2010–2017 | Urban functional zoning & land-use classification |
+| ≈2010–2017 | Urban morphology & structure |
+| ≈2018–2024 | Urban vibrancy & spatial equity |
+| ≈2018–2024 | Socioeconomic inequality & segregation |
+| ≈2018–2024 | Transportation & mobility |
+| ≈2018–2024 | Multi-source integration |
+| ≈2025 → | Dynamic, real-time monitoring |
+| ≈2025 → | Semantic & AI-driven understanding |
 {: .table-wrap}
 
 ## 1.2 &nbsp;Mapping the Data Source Landscape {#j-landscape}
@@ -191,7 +191,7 @@ Query from the [Pyrosm](https://pyrosm.readthedocs.io/en/stable/) directly.
 ```python
 from pyrosm import OSM, get_data
 
-fp = get_data("Goleta")          # downloads a regional extract
+fp = get_data("China")          # downloads a regional extract
 osm = OSM(fp)
 pois = osm.get_pois()
 print(pois[["name", "amenity", "geometry"]].head(20))
