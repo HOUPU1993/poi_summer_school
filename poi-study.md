@@ -23,6 +23,10 @@ Urban studies increasingly rely on POI data to characterize the spatial distribu
 
 ### Study areas
 
+![POI Data Sources Relationships](../assets/poi_study/poi_data_sources_relationships.png)
+*<span class="fig-label">FIG. 1</span>How the nine POI data sources collect and share data — arrows show which sources feed into which aggregators.*
+{: .figcap}
+
 | Tier | MSA | Population | Google Places POIs |
 |---|---|---:|---:|
 | High | New York–Newark–Jersey City, NY-NJ | 20,011,812 | 65,680 |
@@ -40,6 +44,12 @@ Urban studies increasingly rely on POI data to characterize the spatial distribu
 | Low | Pinehurst–Southern Pines, NC | 98,618 | 2,839 |
 | Low | Paducah, KY-IL | 98,477 | 4,226 |
 {: .table-wrap}
+
+<iframe 
+  src="../html/msa_centers_satellite.html" 
+  style="width:100%;height:600px;border:1px solid var(--line);border-radius:3px;margin:20px 0;" 
+  loading="lazy">
+</iframe>
 
 Reference POIs were built from a grid of sampling points spaced 5 km apart across each MSA; each point queried the Google Places API separately for each of 15 categories within a 5 km radius (max 20 POIs per query). *Facilities* and *Housing* were excluded — the former for having too few subtypes to compare meaningfully, the latter because most alternative datasets lack a comparable category.
 {: .note}
