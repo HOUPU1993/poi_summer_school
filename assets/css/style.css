@@ -27,11 +27,11 @@ body{
   font-family:'IBM Plex Sans',sans-serif;
   font-size:16px;
   line-height:1.65;
-  background-image:
+  /* background-image:
     linear-gradient(var(--line-soft) 1px, transparent 1px),
     linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
   background-size:64px 64px;
-  background-attachment:fixed;
+  background-attachment:fixed; */
 }
 ::selection{background:var(--accent-soft);color:var(--ink);}
 
