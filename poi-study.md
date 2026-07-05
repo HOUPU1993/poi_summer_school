@@ -23,10 +23,6 @@ Urban studies increasingly rely on POI data to characterize the spatial distribu
 
 ### Study areas
 
-![POI Data Sources Relationships](../assets/poi_study/poi_data_sources_relationships.png)
-*<span class="fig-label">FIG. 1</span>How the nine POI data sources collect and share data — arrows show which sources feed into which aggregators.*
-{: .figcap}
-
 | Tier | MSA | Population | Google Places POIs |
 |---|---|---:|---:|
 | High | New York–Newark–Jersey City, NY-NJ | 20,011,812 | 65,680 |
@@ -46,7 +42,7 @@ Urban studies increasingly rely on POI data to characterize the spatial distribu
 {: .table-wrap}
 
 <iframe 
-  src="../html/msa_centers_satellite.html" 
+  src="../assets/html/msa_centers_satellite.html" 
   style="width:100%;height:600px;border:1px solid var(--line);border-radius:3px;margin:20px 0;" 
   loading="lazy">
 </iframe>
