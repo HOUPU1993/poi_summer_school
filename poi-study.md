@@ -11,9 +11,9 @@ permalink: /poi-study/
 
 <p class="page-dek">Evidence from 14 U.S. Metropolitan Statistical Areas. Houpu Li, 2026 — prepared for <em>Transactions in GIS</em>.</p>
 
-## 2.1 &nbsp;Introduction & Study Design {#s-intro}
+## 1.1 &nbsp;Study Area and Data Collection {#s-intro}
 
-Urban studies increasingly rely on POI data to characterize the spatial distribution of urban functions and amenities. Google Places is widely regarded as the most comprehensive and accurate source, but its API costs and access limits restrict its use in large-scale research — pushing researchers toward Overture Maps, SafeGraph, Foursquare, and OpenStreetMap. Because these four datasets differ substantially in how they are collected, they may carry systematic quality differences that bias empirical findings. Despite growing reliance on them, a nationwide, multi-dimensional quality assessment had not existed. This study provides one.
+This study evaluates four alternative POI datasets — Overture Maps, SafeGraph, Foursquare, and OpenStreetMap — against Google Places as the reference benchmark, across **14 U.S. Metropolitan Statistical Areas** spanning three population tiers (high, mid, and low). Google Places POIs were collected as ground truth via a systematic grid-sampling approach, then matched against each alternative dataset to compute completeness, positional accuracy, and spatial heterogeneity across 15 categories.
 
 - **14** — U.S. Metropolitan Statistical Areas, across 3 population tiers
 - **289,944** — unique Google Places reference POIs
@@ -50,30 +50,70 @@ Urban studies increasingly rely on POI data to characterize the spatial distribu
 Reference POIs were built from a grid of sampling points spaced 5 km apart across each MSA; each point queried the Google Places API separately for each of 15 categories within a 5 km radius (max 20 POIs per query). *Facilities* and *Housing* were excluded — the former for having too few subtypes to compare meaningfully, the latter because most alternative datasets lack a comparable category.
 {: .note}
 
-## 2.2 &nbsp;Why Standardization Comes First {#s-standardization}
+### Why Query by Category, Not Generally
+
+The Google Places API returns results for a search circle ranked by popularity by default (distance-ranking is also selectable), capped at a small number of results per request. A pilot study in Isla Vista, CA (bounding box: lon −119.8694 to −119.85346, lat 34.40887 to 34.41727; 100 m radius) compared a single **general query** (no category filter) against **category-specific queries** (one separate query per category) to test whether a general query alone is sufficient.
+
+![Completeness by population tier](../assets/poi_study/total_query_cat.png)
+*<span class="fig-label">FIG. 2</span>Comparison Between Total Query and Category-specific Query.*
+{: .figcap}
+
+| Category | General Query (Total) | Category-Specific Query | Missing Rate |
+|---|---:|---:|---:|
+| Automotive | 8 | 10 | 20% |
+| Business | 1 | 3 | 66.67% |
+| Culture | N/A | 2 | 0% |
+| Education | N/A | 5 | 0% |
+| Entertainment | 31 | 34 | 8.82% |
+| Facilities | N/A | 1 | 100% |
+| Finance | 3 | 6 | 50% |
+| Food | 46 | 53 | 13.21% |
+| Government | 2 | 3 | 33.3% |
+| Health | N/A | 11 | 100% |
+| Lodging | 2 | 2 | 0% |
+| Nature | 2 | 1 | 100% |
+| Places of Worship | 8 | 9 | 11.1% |
+| Services | 20 | 29 | 33.03% |
+| Shop | 27 | 29 | 6.9% |
+| Sports | 3 | 4 | 25% |
+| Transportation | 24 | 27 | 11% |
+{: .table-wrap}
+
+The highest bias arises in **Facilities, Health, and Nature** (100% missing under a general query alone), followed by **Business** (66.67%) and **Finance** (50%). Only high-density, frequently-searched categories (Food, Shop, Entertainment) are adequately captured by a general query.
+
+This gap is exactly why the national-scale collection queries **each of the 15 categories separately at every sampling point**, rather than relying on a single general query — a general query would systematically undercount low-density and non-commercial categories (Nature, Government, Health, Facilities) relative to high-density commercial ones (Food, Shop, Entertainment).
+{: .note}
+
+## 1.2 &nbsp;Why Standardization Comes First {#s-standardization}
 
 The most consequential methodological fact underlying this entire study is easy to state and easy to underestimate: **the four alternative datasets don't just disagree about which POIs exist — they disagree about how to describe the POIs they agree on.** Before any distance threshold or similarity score means anything, every record has to be forced into the same shape.
 
-This is not a hypothetical concern. The same real-world business shows up differently across sources because each provider has its own internal conventions for fields, encodings, and formatting:
+This is not a hypothetical concern. Real POI names go through several concrete transformations before two sources can be fairly compared. The pipeline first produces a **cleaned name** (accent-stripped, uppercased, punctuation-normalized), then a **primary string** — the cleaned name with generic descriptor words, legal-entity suffixes, and stopwords removed, isolating the brand's core identifying token:
 
-| Source | Recorded name |
-|---|---|
-| Google Places | `7-Eleven` |
-| Provider B | `7-ELEVEN #24817` |
-| Provider C | `Seven Eleven` |
-| Provider D | `7‑Eleven® (Café)` |
+| Raw name (source) | After cleaning | After primary-string extraction |
+|---|---|---|
+| `Café Roma` | `CAFE ROMA` | `ROMA` |
+| `McDonald's` | `MCDONALD` | `MCDONALD` |
+| `Trader Joe's (Downtown)` | `TRADER JOE` | `TRADER JOE` |
+| `Joe's Pizza House LLC` | `JOE PIZZA HOUSE LLC` | `JOE` |
+| `7-Eleven #24817` | `7 ELEVEN 24817` | `7 ELEVEN 24817` |
 {: .table-wrap}
 
-*↑ same store, four different strings — a naive string comparison sees four different POIs ↑*
+*↑ the same processing pipeline handles accents, possessives, parentheticals, and generic/legal words — but leaves embedded digits untouched, which is exactly why fuzzy similarity scoring, not exact-string matching, does the final comparison ↑*
 {: .figcap}
 
-Four categories of inconsistency recur across every dataset pair:
+Four concrete transformations recur across every dataset pair:
 
-- **Aa** — **Case conventions** — all-caps store IDs vs. title case vs. mixed brand styling
-- **é→e** — **Character encoding** — accented characters, unicode symbols, or smart quotes rendered inconsistently
-- **St.** — **Address formatting** — abbreviated vs. spelled-out street types, unit numbers present or absent
-- **#12** — **Field noise** — franchise/store numbers, trademark symbols, and punctuation baked into the name field
+- **é→e** — **Unicode normalization** — accented characters are decomposed and stripped (`Café` → `CAFE`)
+- **'s→∅** — **Possessive & plural-S removal** — a trailing `'s` or standalone `S` token is dropped when cleaning names (`McDonald's` → `MCDONALD`); this step is not applied when cleaning addresses
+- **(...)→∅** — **Parenthetical removal** — any content inside `( )` is dropped entirely, regardless of what it contains
+- **generic words→∅** — **Generic & legal-entity word removal** — for names only, a fixed word list (food-business terms like *RESTAURANT/CAFE/PIZZA*, venue terms like *HOTEL/PLAZA/CENTER*, legal suffixes like *LLC/INC/CORP*, and stopwords like *THE/OF/AND*) is stripped to isolate the brand's core token
 {: .card-grid}
+
+> **A known limitation, by design**
+>
+> The cleaning pipeline does not specifically target embedded digits — a store or franchise number left in a name field (`7-Eleven #24817` → `7 ELEVEN 24817`) survives every cleaning step, since digits are treated as ordinary word characters. This residual noise is exactly why the matching stage relies on fuzzy similarity scoring rather than exact-string equality — a name with a trailing number can still score highly similar to the same name without one.
+{: .callout}
 
 > **The consequence**
 >
@@ -82,22 +122,31 @@ Four categories of inconsistency recur across every dataset pair:
 
 ### The standardization pipeline
 
-All records — from Google Places and each of the four comparison datasets — pass through an identical four-step pipeline before matching begins:
+Names and addresses are cleaned with an overlapping but not identical sequence of steps — addresses skip the possessive-removal and primary-string-extraction steps, since generic words like *STREET* or *AVE* are meaningful in an address but not in a business name.
 
-1. **Field extraction** — Every record is reduced to five core fields regardless of source schema: a unique ID, name, address, category, and geographic coordinates (lat/lon).
-2. **Special-character removal** — Punctuation, trademark symbols, and franchise/store numbers embedded in name fields are stripped.
-3. **Unicode normalization** — Accented and non-ASCII characters are normalized to a consistent representation so that visually identical names compare equal.
-4. **Uppercase conversion** — All text fields are case-folded, removing spurious mismatches from stylistic capitalization choices.
+**Applied to both names and addresses:**
+1. **Unicode normalization** — NFKD decomposition followed by removal of combining characters, so accented characters compare equal to their unaccented form (`é` → `e`).
+2. **Uppercase conversion** — all text is case-folded.
+3. **Parenthetical removal** — any text inside `( )` is dropped entirely.
+4. **Non-ASCII stripping** — remaining non-ASCII characters (emoji, trademark/registered-mark symbols) are removed via ASCII-only re-encoding.
+5. **Punctuation replacement** — remaining non-word, non-whitespace characters are replaced with a space; digits are preserved.
+6. **Whitespace collapsing** — repeated spaces are collapsed to one, and the result is trimmed.
+{: .steps}
+
+**Applied to names only, after the steps above:**
+
+7. **Possessive/plural-S removal** — a trailing `'s` or a standalone `S` token is removed (`MCDONALD'S` → `MCDONALD`).
+8. **Primary-string extraction** — tokens matching a fixed list of generic food/venue words, legal-entity suffixes, or stopwords are removed, leaving only the brand's core identifying token(s). If removing these words would leave a single token shorter than 3 characters, the extraction is skipped and the full cleaned name is kept instead, to avoid over-stripping short brand names.
 {: .steps}
 
 Category fields are separately cross-walked to the Google Places Table A classification, since each alternative dataset ships its own category taxonomy.
 {: .note}
 
-## 2.3 &nbsp;The Two-Stage Matching Pipeline {#s-matching}
+## 1.3 &nbsp;The Two-Stage Matching Pipeline {#s-matching}
 
 Once records are standardized, matching balances two competing failure modes: missing true matches (hurting recall) and accepting false ones (hurting precision). The pipeline splits this into a cheap, generous first pass and a stricter, learned second pass.
 
-1. **Stage 1 — Rule-based candidate matching**<br>For each Google Places POI, a KD-tree spatial index finds up to 100 nearby candidates within a 1,000 m radius in the comparison dataset. Name similarity is scored with RapidFuzz's Levenshtein-based fuzzy matching, keeping the top 5 candidates scoring above 80. Consistency is cross-checked with `partial_ratio`, `token_sort_ratio`, and `token_set_ratio`; the highest-scoring candidate is selected as the matched pair. Address similarity and location distance are computed for every matched pair and passed forward.
+1. **Stage 1 — Rule-based candidate matching**<br>For each Google Places POI, a KD-tree spatial index (built on coordinates reprojected to a metric CRS) finds up to 100 nearby candidates within a 1,000 m radius in the comparison dataset. Candidate names are reduced to primary strings using the same cleaning pipeline as above, and the top 5 candidates by RapidFuzz's WRatio score are shortlisted. Each of those 5 is then re-scored by taking the *highest* of its `WRatio`, `partial_ratio`, `token_sort_ratio`, and `token_set_ratio` values; the single best-scoring candidate among the 5 is accepted as a match only if that combined score is ≥ 80. Address similarity is scored separately (using the same four RapidFuzz metrics, but on addresses cleaned without primary-string extraction) and recorded for every accepted match, alongside its location distance, to be passed forward as features for Stage 2.</li>
 2. **Stage 2 — ML-based match verification**<br>Manual review of Stage-1 output found a ≈10.3% mismatch rate, varying noticeably by MSA and dataset — evidence that naming conventions, address formats, and spatial density differ enough between metros that a single rule-based threshold can't fit all of them. To correct this, a **separate XGBoost classifier is trained for every MSA × dataset combination** (56 classifiers total), using three features: name similarity, location distance, and address similarity.
 {: .steps}
 
@@ -112,16 +161,75 @@ Once records are standardized, matching balances two competing failure modes: mi
 > A single pooled model trained across all MSAs and datasets would average away real differences — a name-matching pattern that works for SafeGraph in New York doesn't necessarily transfer to OSM in Dubuque. Training per MSA-dataset combination lets the classifier absorb local naming conventions, address formats, and spatial density rather than fight against them.
 {: .callout}
 
-## 2.4 &nbsp;The Quality Assessment Framework {#s-framework}
+### Validating the Pipeline: Google Places × NYC DOHMH (Food)
+
+To confirm that the two-stage pipeline actually captures true matches rather than merely producing plausible-looking ones, Google Places Food POIs in New York City were checked against the NYC Department of Health and Mental Hygiene (DOHMH) restaurant inspection dataset — an independent, government-maintained source with strong entity-level ground truth.
+
+- **530** — manually confirmed true POI pairs between Google Places and NYC DOHMH (ground truth)
+- **519** — candidate pairs generated by Stage 1 (rule-based matching)
+{: .card-grid}
+
+| Metric | Count | Rate |
+|---|---:|---:|
+| True matches found by Stage 1 | 507 | 95.6% |
+| False positives from Stage 1 | 12 | 2.2% (of 530) |
+{: .table-wrap}
+
+A 200-sample subset was drawn from the 519 Stage-1 candidates for manual verification, containing 4 of the 12 known false positives, which were relabeled as `False`. This labeled subset was split 75/25 into train/test to train an XGBoost classifier — the same architecture used across the full 56-classifier national pipeline above.
+
+| Class | Precision | Recall | F1-score | Support |
+|---|---:|---:|---:|---:|
+| 0 (false match) | 1.00 | 1.00 | 1.00 | 1 |
+| 1 (true match) | 1.00 | 1.00 | 1.00 | 49 |
+| **Accuracy** | | | **1.00** | 50 |
+| Macro avg | 1.00 | 1.00 | 1.00 | 50 |
+| Weighted avg | 1.00 | 1.00 | 1.00 | 50 |
+{: .table-wrap}
+
+AUC = **1.0** on the held-out test set.
+
+> **Before → after Stage 2**
+>
+> Stage 2 correctly identified 506 of the 507 true matches, and cut the false-positive rate from 2.2% down to 0.1%. Final result for Google Places Food POIs in New York City: **506 true matches (95.4%)**, **1 false positive (0.1%)**, **24 missed matches (4.5%)**.
+{: .callout}
+
+## 1.4 &nbsp;The Quality Assessment Framework {#s-framework}
 
 Every alternative dataset is scored on three dimensions, each computed at three levels: pooled across all 14 MSAs, aggregated by population tier, and as a function of distance to the CBD.
 
-- **①** — **Completeness** — the share of Google Places POIs in category *c* that have a verified true match in dataset *d*: `|TP(d,c)| / |GP(c)|`
-- **②** — **Positional accuracy** — the median Euclidean distance, in meters, between matched POI pairs (median chosen over mean to resist long-tail outliers from bad source coordinates)
-- **③** — **Spatial heterogeneity** — a weighted-least-squares regression of completeness or location bias against distance to the city center, weighted by the number of reference POIs per 2 km bin
+- **①** — **Completeness** — the share of Google Places POIs in category *c* that have a verified true match in dataset *d*
+- **②** — **Positional accuracy** — the median Euclidean distance, in meters, between matched POI pairs
+- **③** — **Spatial heterogeneity** — a weighted-least-squares regression of completeness or location bias against distance to the city center
 {: .card-grid}
 
-## 2.5 &nbsp;Results {#s-results}
+### Formal definitions
+
+**① Completeness**
+
+$$
+\text{Completeness}(d, c) = \frac{|TP(d, c)|}{|GP(c)|}
+$$
+
+where $GP(c)$ is the set of Google Places POIs in category $c$, and $TP(d, c)$ is the set of verified true matches for dataset $d$ in category $c$.
+
+**② Positional accuracy**
+
+$$
+\text{LocAcc}(d, c) = \underset{i \in TP(d,c)}{\text{median}} \left\lVert \mathbf{p}_i^{GP} - \mathbf{p}_i^{d} \right\rVert_2
+$$
+
+the median Euclidean distance between the projected coordinates of each matched pair — median rather than mean, to resist long-tail outliers from bad source coordinates.
+
+**③ Spatial heterogeneity**
+
+$$
+Y_b(d, c) = \alpha + \beta_{d,c} \cdot \text{dist\_center}_b + \epsilon_b, \qquad \epsilon_b \sim \mathcal{N}\left(0, \frac{\sigma^2}{n_{b,c}}\right)
+$$
+
+where $Y_b$ is either completeness or median location bias in a 2 km distance bin $b$, $\text{dist\_center}_b$ is that bin's midpoint distance to the city center, and $n_{b,c}$ — the number of reference POIs in that bin — serves as the WLS regression weight. The coefficient $\beta_{d,c}$ (per 10 km) captures the strength and direction of the spatial decay gradient.
+{: .note}
+
+## 1.5 &nbsp;Results {#s-results}
 
 ### Overall completeness
 
@@ -290,7 +398,7 @@ Distance-decay in completeness is steepest for **Transportation, Entertainment, 
 *<span class="fig-label">FIG. 10</span>Location bias vs. distance to the CBD, all 15 categories pooled (WLS estimates).*
 {: .figcap}
 
-## 2.6 &nbsp;Discussion & Implications {#s-discussion}
+## 1.6 &nbsp;Discussion & Implications {#s-discussion}
 
 - **①** — **SafeGraph & Overture lead**, but by different margins depending on context. Foursquare and OSM show distinct failure modes: Foursquare trades completeness for noisy coordinates; OSM trades positional accuracy for large completeness gaps.
 - **②** — **Completeness has a spatial signature that accuracy doesn't.** Match rates decay with metro size and CBD distance across the board; location accuracy is largely flat except for Foursquare and OSM.
@@ -300,7 +408,5 @@ Distance-decay in completeness is steepest for **Transportation, Entertainment, 
 
 Practically, this means dataset choice should be **category-specific rather than global**. For coordinate-sensitive work (accessibility, routing, proximity measures), SafeGraph's low error and narrow spread make it the safer default. For broad spatial coverage across metro sizes, SafeGraph and Overture are most reliable, though both still lose ground in smaller and peripheral areas. OSM warrants particular caution in low-population MSAs and for leisure, cultural, and natural-amenity categories. Because completeness — not positional accuracy — carries the systematic urban-core/periphery bias, studies spanning that gradient should correct for coverage rather than coordinate quality.
 
-
 </div>
-
 </div>
