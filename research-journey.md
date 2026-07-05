@@ -55,19 +55,7 @@ As a preliminary step, fourteen popular POI providers from U.S were reviewed for
 > Further review confirmed that **OSM**, **Foursquare**, **SafeGraph**, and **Overture Maps** were the alternative datasets most frequently cited in recent literature, largely due to their data size, category coverage, update frequency, and ease of access.
 {: .callout}
 
-### Data Source Access & Cost Overview
-
-| Data Source | Scale | Cost | Coverage |
-|---|---|---|---|
-| OpenStreetMap | MSA | Free | Full |
-| Overture Maps | MSA | < $300 (covered by new-account credit) | Full |
-| Foursquare (FSQ-OS) | MSA | Free | Full |
-| SafeGraph | MSA | $600 / year | Full |
-| City Government Portal | City | Free | Full |
-| Google Places API | MSA (all) | See detailed cost breakdown below | Full |
-{: .table-wrap}
-
-### Google Places API: Pricing Tiers
+### Estimated Cost Comparison
 
 Based on the [Nearby Search Pro pricing](https://developers.google.com/maps/billing-and-pricing/pricing#places-pricing): each request returns up to 20 POIs, with a maximum of 3 pages per search circle.
 
@@ -81,29 +69,10 @@ Based on the [Nearby Search Pro pricing](https://developers.google.com/maps/bill
 | 5,000,000+ | $2.40 |
 {: .table-wrap}
 
-### Estimated Cost by Study Scope and Search Radius
+![Estimated Cost Comparison](../assets/poi_study/estimated_cost_comparison.png)
+*<span class="fig-label">FIG. 11</span>Estimated Cost Comparison Across Multuple Datasets.*
+{: .figcap}
 
-Each scope is queried across 16 POI categories, with up to 3 pages per circle (60 POIs max per category per circle).
-
-| Scope | Total Area (km²) | Radius (km) | Est. Total Queries | Est. Cost | Max Retrievable POIs |
-|---|---:|---:|---:|---:|---:|
-| All MSAs | 4,873,806 | 5 | 2,978,651 | $41,875 | 59,573,015 |
-| All MSAs | 4,873,806 | 10 | 744,663 | $17,978 | 14,893,254 |
-| All MSAs | 4,873,806 | 20 | 186,166 | $5,246 | 3,723,313 |
-| All MSAs | 4,873,806 | 50 | 29,787 | $793 | 595,730 |
-| 30 Largest + 30 Mid + 30 Smallest | 1,490,707 | 5 | 911,053 | $21,172 | 18,221,056 |
-| 30 Largest + 30 Mid + 30 Smallest | 1,490,707 | 10 | 227,763 | $6,311 | 4,555,264 |
-| 30 Largest + 30 Mid + 30 Smallest | 1,490,707 | 20 | 56,941 | $1,662 | 1,138,816 |
-| 30 Largest + 30 Mid + 30 Smallest | 1,490,707 | 50 | 9,111 | $132 | 182,211 |
-| 10 Largest + 10 Mid + 10 Smallest | 510,887 | 5 | 312,231 | $8,473 | 6,244,625 |
-| 10 Largest + 10 Mid + 10 Smallest | 510,887 | 10 | 78,058 | $2,338 | 1,561,156 |
-| 10 Largest + 10 Mid + 10 Smallest | 510,887 | 20 | 19,514 | $464 | 390,289 |
-| 10 Largest + 10 Mid + 10 Smallest | 510,887 | 50 | 3,122 | $0 | 62,446 |
-| 5 Largest + 5 Mid + 5 Smallest | 251,650 | 5 | 153,797 | $4,417 | 3,075,947 |
-| 5 Largest + 5 Mid + 5 Smallest | 251,650 | 10 | 38,449 | $1,070 | 768,987 |
-| 5 Largest + 5 Mid + 5 Smallest | 251,650 | 20 | 9,612 | $148 | 192,247 |
-| 5 Largest + 5 Mid + 5 Smallest | 251,650 | 50 | 1,538 | $0 | 30,759 |
-{: .table-wrap}
 
 **Note:** **Mapbox** overlaps substantially with the sources above. **Precisely Places**, **TomTom Places API**, and **HERE Places**, despite wide commercial adoption — largely driven by supply-chain and history owners information — appear far less frequently in the academic urban-studies literatures.
 {: .note}
