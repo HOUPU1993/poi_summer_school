@@ -44,68 +44,11 @@ A static demo is live at [poibench.streamlit.app](https://poibench.streamlit.app
 
 ## 1.3 &nbsp;How to Use It: A Walkthrough {#b-walkthrough}
 
-Here's what running a benchmark actually looks like, using the published demo: food-related POIs across the Los Angeles MSA. The outputs are the same three measures from Part II — completeness, positional accuracy, spatial heterogeneity — just computed live, for the area you pick, instead of pooled across the whole country.
-
-**Step 1 — Check overall completeness and accuracy.** These two charts give you the big picture first: which dataset covers the most ground, and which one places POIs most accurately.
-
-<div class="fig-grid" markdown="1">
-
-<div markdown="1">
-
-![POIBench completeness overall demo LA MSA](../assets/poibench/bench_fig2a_completeness_overall.png)
-*<span class="fig-label">FIG. 2a</span>Overall completeness by dataset, LA MSA demo.*
-{: .figcap}
-
-</div>
-<div markdown="1">
-
-![POIBench location accuracy overall demo LA MSA](../assets/poibench/bench_fig3a_locacc_overall.png)
-*<span class="fig-label">FIG. 3a</span>Overall location accuracy by dataset, LA MSA demo.*
-{: .figcap}
-
-</div>
-
-</div>
-
-**Step 2 — Drill into your category.** The overall number can hide a lot. A dataset might be great for restaurants but weak for parks. These breakdowns let you check your specific category, not just the average.
-
-![POIBench completeness by category demo LA MSA](../assets/poibench/bench_fig2b_completeness_by_category.png)
-*<span class="fig-label">FIG. 2b</span>Completeness by POI category and dataset, LA MSA demo.*
-{: .figcap}
-
-![POIBench location accuracy by category demo LA MSA](../assets/poibench/bench_fig3b_locacc_by_category.png)
-*<span class="fig-label">FIG. 3b</span>Location accuracy by POI category and dataset, LA MSA demo.*
-{: .figcap}
-
-**Step 3 — Check for spatial bias.** If your study area spans downtown and the suburbs, this matters a lot. These charts show whether a dataset gets worse the further you go from the city center.
-
-<div class="fig-grid" markdown="1">
-
-<div markdown="1">
-
-![POIBench match rate vs distance demo LA MSA](../assets/poibench/bench_fig4a_matchrate_vs_distance.png)
-*<span class="fig-label">FIG. 4a</span>Match rate vs. distance to city center (WLS), LA MSA demo.*
-{: .figcap}
-
-</div>
-<div markdown="1">
-
-![POIBench location difference vs distance demo LA MSA](../assets/poibench/bench_fig4b_locdiff_vs_distance.png)
-*<span class="fig-label">FIG. 4b</span>Median location difference vs. distance to city center (WLS), LA MSA demo.*
-{: .figcap}
-
-</div>
-
-</div>
-
-**Step 4 — Ask the agent.** Once you've seen the numbers, describe your project to the recommendation agent (Module 6). It reads all four scores together and tells you which dataset fits your specific case — not just which one wins on average.
-{: .note}
-
 ## 1.4 &nbsp;What's Next {#b-next}
 
 POIBench has three limits right now:
 
-- **📷** — Datasets are static snapshots, not live feeds — not a good fit for time-sensitive studies
+- **📷** — Alternative Datasets are static snapshots, not live feeds — not a good fit for time-sensitive studies
 - **🌐** — Standardization and matching are tuned for English-language names
 - **🇺🇸** — Only four alternative datasets are supported, and Google Places is the only reference — this makes the tool U.S.-centric for now
 {: .card-grid}
