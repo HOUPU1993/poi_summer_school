@@ -99,27 +99,6 @@ This is not a hypothetical concern. Real POI names go through several concrete t
 | `7-Eleven #24817` | `7 ELEVEN 24817` | `7 ELEVEN 24817` |
 {: .table-wrap}
 
-*↑ the same processing pipeline handles accents, possessives, parentheticals, and generic/legal words — but leaves embedded digits untouched, which is exactly why fuzzy similarity scoring, not exact-string matching, does the final comparison ↑*
-{: .figcap}
-
-Four concrete transformations recur across every dataset pair:
-
-- **é→e** — **Unicode normalization** — accented characters are decomposed and stripped (`Café` → `CAFE`)
-- **'s→∅** — **Possessive & plural-S removal** — a trailing `'s` or standalone `S` token is dropped when cleaning names (`McDonald's` → `MCDONALD`); this step is not applied when cleaning addresses
-- **(...)→∅** — **Parenthetical removal** — any content inside `( )` is dropped entirely, regardless of what it contains
-- **generic words→∅** — **Generic & legal-entity word removal** — for names only, a fixed word list (food-business terms like *RESTAURANT/CAFE/PIZZA*, venue terms like *HOTEL/PLAZA/CENTER*, legal suffixes like *LLC/INC/CORP*, and stopwords like *THE/OF/AND*) is stripped to isolate the brand's core token
-{: .card-grid}
-
-> **A known limitation, by design**
->
-> The cleaning pipeline does not specifically target embedded digits — a store or franchise number left in a name field (`7-Eleven #24817` → `7 ELEVEN 24817`) survives every cleaning step, since digits are treated as ordinary word characters. This residual noise is exactly why the matching stage relies on fuzzy similarity scoring rather than exact-string equality — a name with a trailing number can still score highly similar to the same name without one.
-{: .callout}
-
-> **The consequence**
->
-> Without correcting for these conventions first, every downstream step degrades silently. A name-similarity score computed on `7-ELEVEN #24817` vs. `7-Eleven` will under-report similarity for reasons that have nothing to do with whether it's the same business — inflating false negatives and making a dataset look less complete than it is. This is exactly why standardization is not an optional cleanup step; it is the precondition for every completeness and accuracy number this study reports.
-{: .callout}
-
 ### The standardization pipeline
 
 Names and addresses are cleaned with an overlapping but not identical sequence of steps — addresses skip the possessive-removal and primary-string-extraction steps, since generic words like *STREET* or *AVE* are meaningful in an address but not in a business name.
@@ -149,6 +128,157 @@ Once records are standardized, matching balances two competing failure modes: mi
 1. **Stage 1 — Rule-based candidate matching**<br>For each Google Places POI, a KD-tree spatial index (built on coordinates reprojected to a metric CRS) finds up to 100 nearby candidates within a 1,000 m radius in the comparison dataset. Candidate names are reduced to primary strings using the same cleaning pipeline as above, and the top 5 candidates by RapidFuzz's WRatio score are shortlisted. Each of those 5 is then re-scored by taking the *highest* of its `WRatio`, `partial_ratio`, `token_sort_ratio`, and `token_set_ratio` values; the single best-scoring candidate among the 5 is accepted as a match only if that combined score is ≥ 80. Address similarity is scored separately (using the same four RapidFuzz metrics, but on addresses cleaned without primary-string extraction) and recorded for every accepted match, alongside its location distance, to be passed forward as features for Stage 2.
 2. **Stage 2 — ML-based match verification**<br>Manual review of Stage-1 output found a ≈10.3% mismatch rate, varying noticeably by MSA and dataset — evidence that naming conventions, address formats, and spatial density differ enough between metros that a single rule-based threshold can't fit all of them. To correct this, a **separate XGBoost classifier is trained for every MSA × dataset combination** (56 classifiers total), using three features: name similarity, location distance, and address similarity.
 {: .steps}
+
+### Understanding Levenshtein Distance
+
+Levenshtein Distance is the **minimum number of edits** required to transform one string into another, computed via dynamic programming. Edit operations (weight 1, 1, 1):
+- Insertions
+- Deletions
+- Substitutions
+
+> **Process**
+>
+> For example, to transform **kitten** into **sitting**, we can do the following 3 operations:
+>
+> ```text
+> A = kitten
+> B = sitting
+> ```
+>
+> **Step 1:** Initialize a matrix with dimensions (len(A)+1) × (len(B)+1).
+>
+> ```text
+>       ''  s  i  t  t  i  n  g
+>    -----------------------------
+> '' |  0  1  2  3  4  5  6  7
+> k  |  1
+> i  |  2
+> t  |  3
+> t  |  4
+> e  |  5
+> n  |  6
+> ```
+>
+> **Step 3:** Fill in the matrix using the following rules:
+>
+> ```text
+> k → s  => +1 (substitution)
+> i → i  => 0 (no change)
+> t → t  => 0 (no change)
+> t → t  => 0 (no change)
+> e → i  => +1 (substitution)
+> n → n  => 0 (no change)
+> insert g at the end  => +1 (insertion)
+> ```
+>
+> **Step 4:** The final Levenshtein distance is **3**:
+>
+> ```text
+> k → s  => +1 (substitution)
+> e → i  => +1 (substitution)
+> insert g at the end  => +1 (insertion)
+> ```
+>
+> More details: [Levenshtein Distance](https://yuminlee2.medium.com/levenshtein-distance-1080038a4d9)
+>
+> ![Levenshtein distance matrix](../assets/poi_study/levenshtein distance intro.png)
+{: .note}
+
+### Weighted Rapid Fuzzy Matching
+
+`RapidFuzz` is a fast string-matching library in Python that provides various algorithms for calculating string similarity and distance metrics, including Levenshtein distance — a more advanced version than `Fuzzywuzzy`. It is optimized for performance and can handle large datasets efficiently. The key parameters of RapidFuzz include:
+
+#### Scorer
+
+- **Pure Levenshtein Distance Scorers:** `Levenshtein.distance`
+- **Levenshtein Distance–Based Optimization Scorers:** `fuzz.ratio` (= `Levenshtein.distance`), `fuzz.QRatio` (same, just faster), `fuzz.partial_ratio`, `fuzz.token_sort_ratio`, `fuzz.token_set_ratio`
+- **Levenshtein Distance–Enhanced Scorer:** **`fuzz.WRatio`**
+
+| Function | Uses Levenshtein Internally? | Additional Processing | Typical Use Case |
+|---|---|---|---|
+| `ratio` | Yes (100%) | No | Basic Levenshtein similarity |
+| `QRatio` | Yes | No | Faster version of `ratio` |
+| `partial_ratio` | Yes | Substring extraction | Strong for partial matches; handles long–short gaps |
+| `token_sort_ratio` | Yes | Token sorting | Same words but different order |
+| `token_set_ratio` | Yes | Token set operations | One string is a superset/subset of the other |
+| **`WRatio`** | Yes | Combines `ratio`, `partial_ratio`, `token_sort_ratio`, `token_set_ratio` + length-based scaling | Most robust and intelligent; handles noise, reordering, and long–short differences |
+{: .table-wrap}
+
+```python
+fuzz.ratio("this is a test", "this is a test!")
+# 96.55172413793103
+
+fuzz.QRatio("this is a test", "this is a test!")
+# 96.55172413793103
+
+fuzz.partial_ratio("this is a test", "this is a a test")
+# 100.0
+
+fuzz.token_sort_ratio("this is a test", "is this a test")
+# 100.0
+
+fuzz.token_set_ratio("this is a test", "is is a test")
+# 100.0
+
+fuzz.token_set_ratio("this is a test", "this is not a test")
+# 92.3076923076923
+
+fuzz.WRatio("this is a test", "is this always a TEST???")
+# 100
+```
+
+#### Processor
+
+```python
+# processor removes non-alphanumeric characters and converts to lowercase:
+# "this is a Test？" → "this is a test"
+# "this IS a TEST!!!" → "this is a test"
+fuzz.WRatio("this is a Test？", "this IS a TEST!!!", processor=utils.default_process)
+# 100
+```
+
+#### Limit
+
+```python
+choices = ["Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys"]
+
+process.extract("new york jets", choices, scorer=fuzz.WRatio, limit=2)
+# [('New York Jets', 76.92307692307692, 1), ('New York Giants', 64.28571428571428, 2)]
+
+process.extractOne("cowboys", choices, scorer=fuzz.WRatio)
+# ('Dallas Cowboys', 83.07692307692308, 3)
+```
+
+#### `scorer_kwargs`
+
+Only usable with `scorer=Levenshtein.distance`:
+
+```python
+extractOne("pizza", ["pizza place", "coffee shop"], scorer=Levenshtein.distance,
+           scorer_kwargs={"weights": (1, 1, 2)})  # insertions:1, deletions:1, substitutions:2
+# ('pizza place', 83.07692307692308, 1)
+
+extractOne("pizza", ["pizza place", "coffee shop"], scorer=Levenshtein.distance,
+           scorer_kwargs={"weights": (2, 1, 1)})  # insertions:2, deletions:1, substitutions:1
+# ('pizza place', 63.09263623072263, 1)
+```
+
+#### `score_cutoff`
+
+```python
+choices = ["Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys"]
+
+# even with limit=3, only two results are returned because only two meet score_cutoff=50
+process.extract("new york jets", choices, scorer=fuzz.WRatio, limit=3, score_cutoff=50)
+# [('New York Jets', 76.92307692307692, 1), ('New York Giants', 64.28571428571428, 2)]
+```
+
+#### Further resources
+
+GitHub repo: [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz)
+Full documentation: [RapidFuzz 3.14.3 Documentation](https://rapidfuzz.github.io/RapidFuzz/Usage/distance/index.html)
+{: .note}
+
 
 - **84,000** — manually labeled candidate pairs, 75/25 train-test split per MSA-dataset combination
 - **0.97** — median precision across 56 classifiers
