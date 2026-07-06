@@ -181,7 +181,7 @@ Levenshtein Distance is the **minimum number of edits** required to transform on
 >
 > More details: [Levenshtein Distance](https://yuminlee2.medium.com/levenshtein-distance-1080038a4d9)
 >
-> ![Levenshtein distance matrix](../assets/poi_study/levenshtein distance intro.png)
+> ![Levenshtein distance matrix](../assets/poi_study/levenstain distance intro.png)
 {: .note}
 
 ### Weighted Rapid Fuzzy Matching
@@ -227,52 +227,6 @@ fuzz.WRatio("this is a test", "is this always a TEST???")
 # 100
 ```
 
-#### Processor
-
-```python
-# processor removes non-alphanumeric characters and converts to lowercase:
-# "this is a Test？" → "this is a test"
-# "this IS a TEST!!!" → "this is a test"
-fuzz.WRatio("this is a Test？", "this IS a TEST!!!", processor=utils.default_process)
-# 100
-```
-
-#### Limit
-
-```python
-choices = ["Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys"]
-
-process.extract("new york jets", choices, scorer=fuzz.WRatio, limit=2)
-# [('New York Jets', 76.92307692307692, 1), ('New York Giants', 64.28571428571428, 2)]
-
-process.extractOne("cowboys", choices, scorer=fuzz.WRatio)
-# ('Dallas Cowboys', 83.07692307692308, 3)
-```
-
-#### `scorer_kwargs`
-
-Only usable with `scorer=Levenshtein.distance`:
-
-```python
-extractOne("pizza", ["pizza place", "coffee shop"], scorer=Levenshtein.distance,
-           scorer_kwargs={"weights": (1, 1, 2)})  # insertions:1, deletions:1, substitutions:2
-# ('pizza place', 83.07692307692308, 1)
-
-extractOne("pizza", ["pizza place", "coffee shop"], scorer=Levenshtein.distance,
-           scorer_kwargs={"weights": (2, 1, 1)})  # insertions:2, deletions:1, substitutions:1
-# ('pizza place', 63.09263623072263, 1)
-```
-
-#### `score_cutoff`
-
-```python
-choices = ["Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys"]
-
-# even with limit=3, only two results are returned because only two meet score_cutoff=50
-process.extract("new york jets", choices, scorer=fuzz.WRatio, limit=3, score_cutoff=50)
-# [('New York Jets', 76.92307692307692, 1), ('New York Giants', 64.28571428571428, 2)]
-```
-
 #### Further resources
 
 GitHub repo: [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz)
@@ -285,11 +239,6 @@ Full documentation: [RapidFuzz 3.14.3 Documentation](https://rapidfuzz.github.io
 - **0.98** — median recall & F1-score
 - **0.96** — median accuracy
 {: .card-grid}
-
-> **Why 56 separate classifiers, not one**
->
-> A single pooled model trained across all MSAs and datasets would average away real differences — a name-matching pattern that works for SafeGraph in New York doesn't necessarily transfer to OSM in Dubuque. Training per MSA-dataset combination lets the classifier absorb local naming conventions, address formats, and spatial density rather than fight against them.
-{: .callout}
 
 ### Validating the Pipeline: Google Places × NYC DOHMH (Food)
 
