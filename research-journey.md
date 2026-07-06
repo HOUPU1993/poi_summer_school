@@ -208,12 +208,12 @@ Requires applying for a free **academic data license** through SafeGraph directl
 Query from the [Pyrosm](https://pyrosm.readthedocs.io/en/stable/) directly.
 
 ```python
-from pyrosm import OSM, get_data
+import osmnx as ox
 
-fp = get_data("China")          # downloads a regional extract
-osm = OSM(fp)
-pois = osm.get_pois()
-print(pois[["name", "amenity", "geometry"]].head(20))
+ox.settings.cache_folder = "/Users/houpuli/Downloads/osm_cache"
+# Query by city
+tags = {"amenity": True, "shop": True}
+gdf = ox.features_from_place("Santa Barbara, California, USA", tags)
 ```
 
 </div>
