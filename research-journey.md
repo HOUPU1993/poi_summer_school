@@ -98,12 +98,12 @@ Three existing POI-comparison studies were reviewed in depth to understand what 
 
 Synthesizing across the four prior studies above surfaced a working list of nine candidate metrics:
 
-- **01** — **Spatial distribution pattern** — are a dataset's POIs clustered, randomly distributed, or dispersed across the study area?
-- **02** — **Completeness** — how much of the real-world POI population does a dataset actually capture?
-- **03** — **Accuracy** — are a POI's attributes (existence, name, category) correct?
-- **04** — **Consistency** — do different datasets cover the same functional areas of a city, or different ones?
-- **05** — **Positional accuracy** — how far off is a POI's recorded coordinate from its true location?
-- **06** — **Category structure** — how comparable are datasets' classification hierarchies?
+- **01** — **Data Completeness** — how much of the real-world POI population does a dataset actually capture?
+- **02** — **Spatial distribution pattern** — are a dataset's POIs clustered, randomly distributed, or dispersed across the study area?
+- **03** — **Positional accuracy** — how far off is a POI's recorded coordinate from its true location?
+- **04** — **Category structure** — how comparable are datasets' classification hierarchies?
+- **05** — **Attribute Accuracy** — are a POI's attributes (existence, name, category) correct?
+- **06** — **Consistency** — do different datasets cover the same functional areas of a city, or different ones?
 - **07** — **Average density** — how many POIs does a dataset report per km²?
 - **08** — **Download cost** — how expensive or restrictive is it to access the data?
 - **09** — **Update frequency** — how often is the data refreshed?
