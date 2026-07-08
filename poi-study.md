@@ -210,9 +210,6 @@ Levenshtein Distance is the **minimum number of edits** needed to turn one strin
 fuzz.ratio("this is a test", "this is a test!")
 # 96.55172413793103
 
-fuzz.QRatio("this is a test", "this is a test!")
-# 96.55172413793103
-
 fuzz.partial_ratio("this is a test", "this is a a test")
 # 100.0
 
@@ -221,9 +218,6 @@ fuzz.token_sort_ratio("this is a test", "is this a test")
 
 fuzz.token_set_ratio("this is a test", "is is a test")
 # 100.0
-
-fuzz.token_set_ratio("this is a test", "this is not a test")
-# 92.3076923076923
 
 fuzz.WRatio("this is a test", "is this always a TEST???")
 # 100
