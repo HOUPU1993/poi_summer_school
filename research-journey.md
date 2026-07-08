@@ -35,7 +35,7 @@ As a preliminary step, fourteen popular POI providers from U.S were reviewed for
 |---|---|---|---|
 | [OpenStreetMap](https://wiki.openstreetmap.org/wiki/Overpass_API) | ~2 TB total storage (no explicit POI count) | Volunteer-maintained, updated weekly, open *Map Features* taxonomy. | ★★★★ |
 | [Overture Maps](https://overturemaps.org/) | 71.5M Place POIs | Aggregates Foursquare, Microsoft, and others; Foursquare alone claims 200M+, of which Overture ingests ~6M. Also the largest known building-footprint layer (2.5B+). | ★★★★★ |
-| [Foursquare Open Source Places](https://places.foursquare.com/) | 200M+ globally | 100% coverage of the top-100 U.S. retail/QSR chains; ships a `reality_score_mean` confidence field; free/pro/premium tiers. | ★★★★★ |
+| [Foursquare Open Source Places](https://foursquare.com/resources/blog/products/technical-guide-to-foursquare-places-part-2-how-does-foursquare-get-location-data-right) | 14M+ globally | App-based check-in data collection and some other third party sources. | ★★★★★ |
 | [SafeGraph](https://www.safegraph.com/guides/places-api) | 40M+ across ~200 countries | Monthly refresh cadence; publishes its own coverage map. | ★★★★★ |
 | Factual Places API | 130M (52 countries) | Acquired by Foursquare in 2019; no longer available standalone. | ★ |
 | [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview) | 200M+ globally | No native bounding-box search; unsigned requests capped at 25,000/day; the de-facto reference standard. | ★★★★★ |
