@@ -50,6 +50,10 @@ As a preliminary step, fourteen popular POI providers from U.S were reviewed for
 | [Geoapify](https://apidocs.geoapify.com/) | — | Travel-type search around a location; 400+ place types. | ★★★ |
 {: .table-wrap}
 
+![POI Data Sources Relationships](../assets/poi_study/poi_data_sources_relationships.png)
+*<span class="fig-label">FIG. 1</span>How the nine POI data sources collect and share data — arrows show which sources feed into which aggregators.*
+{: .figcap}
+
 > **Google Places** is widely regarded as the most complete and accurate POI source, but its restrictive access policy and per-request cost make it impractical for large-scale academic research. Researchers therefore turn to alternative datasets — but rarely with a systematic, national-scale understanding of what trade-offs that choice entails.
 >
 > Further review confirmed that **OSM**, **Foursquare**, **SafeGraph**, and **Overture Maps** were the alternative datasets most frequently cited in recent literature, largely due to their data size, category coverage, update frequency, and ease of access.
@@ -73,13 +77,8 @@ Based on the [Nearby Search Pro pricing](https://developers.google.com/maps/bill
 *<span class="fig-label">FIG. 11</span>Estimated Cost Comparison Across Multuple Datasets.*
 {: .figcap}
 
-
 **Note:** **Mapbox** overlaps substantially with the sources above. **Precisely Places**, **TomTom Places API**, and **HERE Places**, despite wide commercial adoption — largely driven by supply-chain and history owners information — appear far less frequently in the academic urban-studies literatures.
 {: .note}
-
-![POI Data Sources Relationships](../assets/poi_study/poi_data_sources_relationships.png)
-*<span class="fig-label">FIG. 1</span>How the nine POI data sources collect and share data — arrows show which sources feed into which aggregators.*
-{: .figcap}
 
 ## 1.3 &nbsp;What Prior Comparison Studies Found {#j-priorwork}
 
