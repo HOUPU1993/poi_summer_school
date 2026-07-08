@@ -103,7 +103,7 @@ Synthesizing across the four prior studies above surfaced a working list of nine
 - **03** — **Positional accuracy** — how far off is a POI's recorded coordinate from its true location?
 - **04** — **Category structure** — how comparable are datasets' classification hierarchies?
 - **05** — **Attribute Accuracy** — are a POI's attributes (existence, name, category) correct?
-- **06** — **Consistency** — do different datasets cover the same functional areas of a city, or different ones?
+- **06** — **Consistency** — do different datasets have simular data formats and record?
 - **07** — **Average density** — how many POIs does a dataset report per km²?
 - **08** — **Download cost** — how expensive or restrictive is it to access the data?
 - **09** — **Update frequency** — how often is the data refreshed?
